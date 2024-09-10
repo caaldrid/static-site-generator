@@ -20,9 +20,9 @@ class HTMLNode:
                 k,
                 v,
             ) in self.props.items():
-                html_str += f" {k}={v}"
+                html_str += f' {k}="{v}"'
 
         return html_str
 
     def __repr__(self):
-        return f"HTMLNode(tag='{self.tag}', value='{self.value}', children='{self.children}', props='{self.props_to_html()}')"
+        return f'HTMLNode(tag="{self.tag}", value="{self.value}", children="{self.children}", props="{self.props_to_html()}")'

@@ -15,7 +15,7 @@ class TestHTMLNode(unittest.TestCase):
             },
         )
         self.assertEqual(
-            " href=https://www.google.com target=_blank", node.props_to_html()
+            ' href="https://www.google.com" target="_blank"', node.props_to_html()
         )
 
     def test_props_to_html2(self):
@@ -33,7 +33,7 @@ class TestHTMLNode(unittest.TestCase):
             },
         )
         self.assertEqual(
-            "HTMLNode(tag='a', value='this is an image HTML node', children='None', props=' href=https://www.google.com target=_blank')",
+            'HTMLNode(tag="a", value="this is an image HTML node", children="None", props=" href="https://www.google.com" target="_blank"")',
             repr(node),
         )
 
