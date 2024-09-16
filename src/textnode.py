@@ -55,6 +55,9 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             ]  # the [1::2] is a slicing which extracts odd values
 
             for text in split_node:
+                if text == "":
+                    continue
+
                 if text in inline:
                     new_nodes.append(TextNode(text, text_type))
                 else:
