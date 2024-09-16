@@ -41,3 +41,24 @@ def text_node_to_html_node(text_node):
             return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
         case _:
             raise Exception("Unknown Text Type")
+
+
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    new_nodes = []
+    for node in old_nodes:
+        if delimiter in node.text:
+
+            split_node = node.text.split(delimiter)
+            # Grab the inline formatted text
+            inline = split_node[
+                1::2
+            ]  # the [1::2] is a slicing which extracts odd values
+
+            for text in split_node:
+                if text in inline:
+                    new_nodes.append(TextNode(text, text_type))
+                else:
+                    new_nodes.append(TextNode(text, TextNode.text_type_text))
+        else:
+            new_nodes.append(node)
+    return new_nodes

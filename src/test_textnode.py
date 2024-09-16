@@ -1,6 +1,6 @@
 import unittest
 
-from textnode import TextNode, text_node_to_html_node
+from textnode import TextNode, split_nodes_delimiter, text_node_to_html_node
 
 
 class TestTextNode(unittest.TestCase):
@@ -59,6 +59,56 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(
             '<img src="https://www.boot.dev/pic.png" alt="This is a image node"></img>',
             html.to_html(),
+        )
+
+    def test_split_nodes_delimeter(self):
+        node = TextNode(
+            "This is text with a `code block` word", TextNode.text_type_text
+        )
+        new_nodes = split_nodes_delimiter([node], "`", TextNode.text_type_code)
+
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is text with a ", TextNode.text_type_text),
+                TextNode("code block", TextNode.text_type_code),
+                TextNode(" word", TextNode.text_type_text),
+            ],
+        )
+
+    def test_split_nodes_delimeter2(self):
+        node = TextNode(
+            "This is text with a **bolded phrase** in the middle",
+            TextNode.text_type_text,
+        )
+        new_nodes = split_nodes_delimiter([node], "**", TextNode.text_type_bold)
+
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is text with a ", TextNode.text_type_text),
+                TextNode("bolded phrase", TextNode.text_type_bold),
+                TextNode(" in the middle", TextNode.text_type_text),
+            ],
+        )
+
+    def test_split_nodes_delimeter3(self):
+        node = TextNode(
+            "This is text with a **bolded phrase** in the middle",
+            TextNode.text_type_text,
+        )
+
+        node1 = TextNode("Another plain text node", TextNode.text_type_text)
+        new_nodes = split_nodes_delimiter([node, node1], "**", TextNode.text_type_bold)
+
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is text with a ", TextNode.text_type_text),
+                TextNode("bolded phrase", TextNode.text_type_bold),
+                TextNode(" in the middle", TextNode.text_type_text),
+                node1,
+            ],
         )
 
 
