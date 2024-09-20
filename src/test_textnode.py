@@ -4,6 +4,8 @@ from textnode import (
     TextNode,
     extract_markdown_images,
     extract_markdown_links,
+    split_node_image,
+    split_node_link,
     split_nodes_delimiter,
     text_node_to_html_node,
 )
@@ -134,6 +136,52 @@ class TestTextNode(unittest.TestCase):
             [
                 ("to boot dev", "https://www.boot.dev"),
                 ("to youtube", "https://www.youtube.com/@bootdotdev"),
+            ],
+        )
+
+    def test_split_nodes_link(self):
+        node = TextNode(
+            "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+            TextNode.text_type_text,
+        )
+        new_nodes = split_node_link([node])
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is text with a link ", TextNode.text_type_text),
+                TextNode(
+                    "to boot dev", TextNode.text_type_link, "https://www.boot.dev"
+                ),
+                TextNode(" and ", TextNode.text_type_text),
+                TextNode(
+                    "to youtube",
+                    TextNode.text_type_link,
+                    "https://www.youtube.com/@bootdotdev",
+                ),
+            ],
+        )
+
+    def test_split_nodes_images(self):
+        node = TextNode(
+            "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
+            TextNode.text_type_text,
+        )
+        new_nodes = split_node_image([node])
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is text with a ", TextNode.text_type_text),
+                TextNode(
+                    "rick roll",
+                    TextNode.text_type_image,
+                    "https://i.imgur.com/aKaOqIh.gif",
+                ),
+                TextNode(" and ", TextNode.text_type_text),
+                TextNode(
+                    "obi wan",
+                    TextNode.text_type_image,
+                    "https://i.imgur.com/fJRm4Vk.jpeg",
+                ),
             ],
         )
 
