@@ -94,6 +94,8 @@ def split_node_link(old_nodes):
 
                 new_nodes.append(TextNode(link_text, TextNode.text_type_link, link_url))
                 text = sections[1]
+            if text != "":
+                new_nodes.append(TextNode(text, TextNode.text_type_text))
         else:
             if node.text != "":
                 new_nodes.append(node)
@@ -126,6 +128,8 @@ def split_node_image(old_nodes):
 
                 new_nodes.append(TextNode(alt_text, TextNode.text_type_image, url))
                 text = sections[1]
+            if text != "":
+                new_nodes.append(TextNode(text, TextNode.text_type_text))
         else:
             if node.text != "":
                 new_nodes.append(node)
@@ -139,3 +143,13 @@ def extract_markdown_images(text):
 
 def extract_markdown_links(text):
     return re.findall(r"(?<!!)\[(.*?)\]\((.*?)\)", text)
+
+
+def text_to_textnodes(text):
+    init_node = TextNode(text, TextNode.text_type_text)
+    bold_nodes = split_nodes_delimiter([init_node], "**", TextNode.text_type_bold)
+    italic_nodes = split_nodes_delimiter(bold_nodes, "*", TextNode.text_type_italic)
+    code_nodes = split_nodes_delimiter(italic_nodes, "`", TextNode.text_type_code)
+    image_nodes = split_node_image(code_nodes)
+    all_nodes = split_node_link(image_nodes)
+    return all_nodes

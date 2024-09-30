@@ -8,6 +8,7 @@ from textnode import (
     split_node_link,
     split_nodes_delimiter,
     text_node_to_html_node,
+    text_to_textnodes,
 )
 
 
@@ -161,6 +162,24 @@ class TestTextNode(unittest.TestCase):
             ],
         )
 
+    def test_split_nodes_link_2(self):
+        node = TextNode(
+            "A [link](https://boot.dev) and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg)",
+            TextNode.text_type_text,
+        )
+        new_nodes = split_node_link([node])
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("A ", TextNode.text_type_text),
+                TextNode("link", TextNode.text_type_link, "https://boot.dev"),
+                TextNode(
+                    " and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg)",
+                    TextNode.text_type_text,
+                ),
+            ],
+        )
+
     def test_split_nodes_images(self):
         node = TextNode(
             "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
@@ -184,6 +203,45 @@ class TestTextNode(unittest.TestCase):
                 ),
             ],
         )
+
+    def test_split_nodes_images_2(self):
+        node = TextNode(
+            "An ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)",
+            TextNode.text_type_text,
+        )
+        new_nodes = split_node_image([node])
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("An ", TextNode.text_type_text),
+                TextNode(
+                    "obi wan image",
+                    TextNode.text_type_image,
+                    "https://i.imgur.com/fJRm4Vk.jpeg",
+                ),
+                TextNode(" and a [link](https://boot.dev)", TextNode.text_type_text),
+            ],
+        )
+
+    def test_text_to_textnodes(self):
+        text = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        expected = [
+            TextNode("This is ", TextNode.text_type_text),
+            TextNode("text", TextNode.text_type_bold),
+            TextNode(" with an ", TextNode.text_type_text),
+            TextNode("italic", TextNode.text_type_italic),
+            TextNode(" word and a ", TextNode.text_type_text),
+            TextNode("code block", TextNode.text_type_code),
+            TextNode(" and an ", TextNode.text_type_text),
+            TextNode(
+                "obi wan image",
+                TextNode.text_type_image,
+                "https://i.imgur.com/fJRm4Vk.jpeg",
+            ),
+            TextNode(" and a ", TextNode.text_type_text),
+            TextNode("link", TextNode.text_type_link, "https://boot.dev"),
+        ]
+        self.assertEqual(expected, text_to_textnodes(text))
 
 
 if __name__ == "__main__":
