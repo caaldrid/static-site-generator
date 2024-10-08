@@ -1,6 +1,15 @@
 import unittest
 
-from blocks import block_to_block_type, markdown_to_blocks
+from blocks import (
+    block_to_block_type,
+    block_type_code,
+    block_type_heading,
+    block_type_olist,
+    block_type_paragraph,
+    block_type_quote,
+    block_type_ulist,
+    markdown_to_blocks,
+)
 
 
 class TestBlock(unittest.TestCase):
@@ -57,14 +66,14 @@ for i in range(10):
 > book"""
 
         expecting = [
-            "heading",
-            "heading",
-            "paragraph",
-            "unordered_list",
-            "unordered_list",
-            "ordered_list",
-            "code",
-            "quote",
+            block_type_heading,
+            block_type_heading,
+            block_type_paragraph,
+            block_type_ulist,
+            block_type_ulist,
+            block_type_olist,
+            block_type_code,
+            block_type_quote,
         ]
 
         blocks = markdown_to_blocks(test_md)
