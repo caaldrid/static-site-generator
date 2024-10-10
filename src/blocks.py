@@ -17,7 +17,7 @@ def markdown_to_blocks(markdown: str):
 
     blocks = map(lambda line: line.strip(), lines)
 
-    return list(blocks)
+    return list(filter(lambda block: block != "", list(blocks)))
 
 
 def block_to_block_type(block_text: str):
