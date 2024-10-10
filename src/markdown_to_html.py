@@ -76,5 +76,7 @@ def markdown_to_html_node(markdown):
                 html_root.children.append(ParentNode("ul", create_list_html(block)))
             case block_types.olist:
                 html_root.children.append(ParentNode("ol", create_list_html(block)))
+            case _:
+                raise ValueError("Invalid block type")
 
     return html_root
