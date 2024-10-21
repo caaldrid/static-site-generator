@@ -1,6 +1,8 @@
 import os
 import shutil
 
+from markdown_to_html import extract_title, markdown_to_html_node
+
 
 def copy_static_to_public():
     def copy_items(from_path, to_path):
@@ -26,3 +28,23 @@ def copy_static_to_public():
     os.mkdir(path_to_public_dir)
 
     copy_items(path_to_static_dir, path_to_public_dir)
+
+
+def generate_page(from_path, template_path, dest_path):
+    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+
+    markdown_file = open(from_path)
+    template_file = open(template_path)
+
+    markdown = markdown_file.read()
+    template = template_file.read()
+
+    content = markdown_to_html_node(markdown).to_html()
+    title = extract_title(markdown)
+
+    markdown_file.close()
+    template_file.close()
+
+    html = template.replace("{{ Title }}", title).replace("{{ Content }}", content)
+    index_file = open(dest_path, mode="w")
+    index_file.write(html)

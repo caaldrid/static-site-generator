@@ -80,3 +80,15 @@ def markdown_to_html_node(markdown):
                 raise ValueError("Invalid block type")
 
     return html_root
+
+
+def extract_title(markdown):
+    lines = markdown.splitlines()
+
+    for line in lines:
+        if line.startswith("#"):
+            header_level = line.count("#")
+            if header_level == 1:
+                return line.split("#")[1].strip()
+
+    raise Exception("Given markdow string is not a h1 header")
