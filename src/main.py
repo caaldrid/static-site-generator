@@ -1,9 +1,8 @@
-from textnode import TextNode
+from statics import copy_static_to_public
 
 
 def main():
-    tn = TextNode("This is a text node", "bold", "https://www.boot.dev")
-    print(tn)
+    copy_static_to_public()
 
 
 if __name__ == "__main__":
