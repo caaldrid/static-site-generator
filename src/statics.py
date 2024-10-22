@@ -1,4 +1,5 @@
 import os
+import pathlib
 import shutil
 
 from markdown_to_html import extract_title, markdown_to_html_node
@@ -46,5 +47,21 @@ def generate_page(from_path, template_path, dest_path):
     template_file.close()
 
     html = template.replace("{{ Title }}", title).replace("{{ Content }}", content)
-    index_file = open(dest_path, mode="w")
-    index_file.write(html)
+
+    html_file = pathlib.Path(dest_path.replace("md", "html"))
+    html_file.touch()
+    html_file.write_text(html)
+
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    contents = os.listdir(dir_path_content)
+
+    for content in contents:
+        content_path = os.path.join(dir_path_content, content)
+        page_path = os.path.join(dest_dir_path, content)
+
+        if os.path.isfile(content_path):
+            generate_page(content_path, template_path, page_path)
+        else:
+            os.mkdir(page_path)
+            generate_pages_recursive(content_path, template_path, page_path)
